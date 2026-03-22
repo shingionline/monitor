@@ -116,7 +116,7 @@ body {
 }
 
 .card-header {
-    color: #8b949e;
+    color: #f78166;
     font-size: 0.8rem;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
@@ -247,7 +247,7 @@ body {
     overflow-y: auto;
 }
 
-.cpu-header {
+.dash-header {
     display:flex;
     align-items: baseline;
     justify-content: space-between;

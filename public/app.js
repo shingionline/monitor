@@ -225,6 +225,7 @@ function updateDashboard(metrics) {
         document.getElementById('ram-usage').textContent = ramUsageDisplay;
         document.getElementById('ram-total').textContent = `/ ${ramTotalGB} GB`;
         document.getElementById('ram-progress').style.width = `${ramUsedPercent}%`;
+        updateElement('ram-percent-used', `${ramUsedPercent.toFixed(1)}%`);
 
         // Update Disk metrics
         const diskUsedGB = metrics.disk.used_gb;
@@ -234,6 +235,7 @@ function updateDashboard(metrics) {
         document.getElementById('disk-usage').textContent = `${diskUsedGB} GB`;
         document.getElementById('disk-total').textContent = `/ ${diskTotalGB} GB`;
         document.getElementById('disk-progress').style.width = `${diskUsedPercent}%`;
+        updateElement('disk-percent-used', `${diskUsedPercent.toFixed(1)}%`);
 
         // Update process tables
         updateProcessTables(metrics.top_processes_cpu, metrics.top_processes_memory);

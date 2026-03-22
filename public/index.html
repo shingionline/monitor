@@ -63,9 +63,9 @@
                 <div class="main-metrics">
                     <!-- CPU Usage -->
                     <div class="metric-card">
-                        <div class="cpu-header">
+                        <div class="dash-header">
                             <h3>CPU</h3>
-                        <span class="card-header" id="cpu-cores">Loading...</span>
+                            <span class="card-header" id="cpu-cores">Loading...</span>
                         </div>
                         
                         <div class="metric-main">
@@ -80,7 +80,10 @@
 
                     <!-- RAM Usage -->
                     <div class="metric-card">
-                        <h3>Memory</h3>
+                        <div class="dash-header">
+                            <h3>Memory</h3>
+                            <span class="card-header" id="ram-percent-used">Loading...</span>
+                        </div>
                         <div class="metric-main">
                             <span class="metric-value" id="ram-usage">0 MB</span>
                             <span class="metric-details" id="ram-total">/ 0 MB</span>
@@ -96,7 +99,10 @@
 
                     <!-- Disk Usage -->
                     <div class="metric-card">
-                        <h3>Disk</h3>
+                        <div class="dash-header">
+                            <h3>Disk</h3>
+                            <span class="card-header" id="disk-percent-used">Loading...</span>
+                        </div>
                         <div class="metric-main">
                             <span class="metric-value" id="disk-usage">0 MB</span>
                             <span class="metric-details" id="disk-total">/ 0 GB</span>
