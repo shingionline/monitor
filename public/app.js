@@ -210,8 +210,9 @@ function updateDashboard(metrics) {
         // Update CPU metrics
         const cpuUsage = parseFloat(metrics.cpu.usage_percent);
         document.getElementById('cpu-usage').textContent = cpuUsage.toFixed(1) + '%';
-        // document.getElementById('load-averages').textContent = 
-        //     `${metrics.cpu.load_1} ${metrics.cpu.load_5} ${metrics.cpu.load_15}`;
+        document.getElementById('cpu-progress').style.width = `${cpuUsage}%`;
+        document.getElementById('load-averages').textContent = 
+            `${metrics.cpu.load_1} ${metrics.cpu.load_5} ${metrics.cpu.load_15}`;
 
         // Update RAM metrics
         const ramUsedMB = metrics.memory.used_mb;
