@@ -153,8 +153,10 @@ body {
 
 .metric-main {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     margin-bottom: 1rem;
+    gap: 10px;
+    align-items: baseline;
 }
 
 .metric-value {
@@ -165,9 +167,10 @@ body {
 }
 
 .metric-details {
-    color: #8b949e;
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
+    color: #fff;
+  font-size: 1.5rem;
+  margin-top: 0.25rem;
+  font-weight: 300;
 }
 
 /* Progress Bar */

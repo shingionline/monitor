@@ -21,6 +21,11 @@ let metricsHistory = [];
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Explicit favicon route
+app.get('/favicon.ico', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'favicon.ico'));
+});
+
 // Route for the dashboard
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -144,9 +149,11 @@ async function getSystemMetrics() {
         const currentLoad = await si.currentLoad();
         const loadAvg = os.loadavg();
 
-        // Memory info
+        // Memory info - Enhanced calculation like NodeQuery
         const mem = await si.mem();
-        const memUsedPercent = ((mem.used / mem.total) * 100).toFixed(1);
+        // More accurate memory calculation: subtract buffers and cache from used memory
+        const actualMemUsed = mem.used - (mem.buffers || 0) - (mem.cached || 0);
+        const memUsedPercent = ((actualMemUsed / mem.total) * 100).toFixed(1);
 
         // Disk usage
         const fsSize = await si.fsSize();
@@ -186,15 +193,50 @@ async function getSystemMetrics() {
                 mem: p.mem.toFixed(1)
             }));
 
-        // Network info
+        // Enhanced Network monitoring
         const networkStats = await si.networkStats();
+        const networkInterfaces = await si.networkInterfaces();
+        
+        // Find primary network interface (like NodeQuery does)
+        const primaryInterface = networkInterfaces.find(iface => 
+            iface.default || iface.internal === false
+        ) || networkInterfaces[0];
+        
+        // Get network connections count
+        const connections = await si.networkConnections();
+        const activeConnections = connections.length;
+        
+        // Enhanced network activity including cumulative stats
         const networkActivity = {
+            interface: primaryInterface?.iface || 'N/A',
             incoming: formatBytes(networkStats[0]?.rx_sec || 0) + '/s',
-            outgoing: formatBytes(networkStats[0]?.tx_sec || 0) + '/s'
+            outgoing: formatBytes(networkStats[0]?.tx_sec || 0) + '/s',
+            rx_total: formatBytes(networkStats[0]?.rx_bytes || 0),
+            tx_total: formatBytes(networkStats[0]?.tx_bytes || 0),
+            connections: activeConnections
         };
 
         // Service status (Apache)
         const serviceStatus = await checkServiceStatus('apache2');
+        
+        // Enhanced system information
+        const users = await si.users();
+        const currentSessions = users.length;
+        
+        // Get file handle information (like NodeQuery)
+        let fileHandles = 'N/A';
+        let fileHandlesLimit = 'N/A';
+        
+        try {
+            const fs = require('fs');
+            const fileNrData = fs.readFileSync('/proc/sys/fs/file-nr', 'utf8').trim().split('\t');
+            if (fileNrData.length >= 3) {
+                fileHandles = fileNrData[0];
+                fileHandlesLimit = fileNrData[2];
+            }
+        } catch (err) {
+            // Fallback if /proc/sys/fs/file-nr is not available
+        }
 
         return {
             metadata: {
@@ -216,9 +258,11 @@ async function getSystemMetrics() {
             memory: {
                 used_percent: memUsedPercent,
                 total_mb: Math.round(mem.total / 1024 / 1024),
-                used_mb: Math.round(mem.used / 1024 / 1024),
+                used_mb: Math.round(actualMemUsed / 1024 / 1024),
                 available_mb: Math.round(mem.available / 1024 / 1024),
-                total_gb: (mem.total / 1024 / 1024 / 1024).toFixed(1)
+                total_gb: (mem.total / 1024 / 1024 / 1024).toFixed(1),
+                cached_mb: Math.round((mem.cached || 0) / 1024 / 1024),
+                buffers_mb: Math.round((mem.buffers || 0) / 1024 / 1024)
             },
             disk: {
                 used_percent: diskUsedPercent,
@@ -232,9 +276,10 @@ async function getSystemMetrics() {
             top_processes_cpu: topProcessesCpu,
             top_processes_memory: topProcessesMem,
             system: {
-                sessions: 1, // Simplified
+                sessions: currentSessions,
                 processes: processes.all,
-                file_handles: '448 of 57285' // Simplified
+                file_handles: `${fileHandles} / ${fileHandlesLimit}`,
+                connections: activeConnections
             }
         };
     } catch (error) {

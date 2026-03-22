@@ -203,14 +203,14 @@ function updateDashboard(metrics) {
         // Update network activity (with safety checks)
         if (metrics.network) {
             updateElement('network-incoming', metrics.network.incoming);
-            updateElement('network-outgoing', metrics.network.outgoing);
+            updateElement('network-outgoing', metrics.network.outgoing);            // Enhanced network metrics\n            updateElement('network-interface', metrics.network.interface);\n            updateElement('network-rx-total', metrics.network.rx_total);\n            updateElement('network-tx-total', metrics.network.tx_total);\n            updateElement('active-connections', metrics.network.connections);
         }
 
         // Update CPU metrics
         const cpuUsage = parseFloat(metrics.cpu.usage_percent);
         document.getElementById('cpu-usage').textContent = cpuUsage.toFixed(1) + '%';
-        document.getElementById('load-averages').textContent = 
-            `${metrics.cpu.load_1} ${metrics.cpu.load_5} ${metrics.cpu.load_15}`;
+        // document.getElementById('load-averages').textContent = 
+        //     `${metrics.cpu.load_1} ${metrics.cpu.load_5} ${metrics.cpu.load_15}`;
 
         // Update RAM metrics
         const ramUsedMB = metrics.memory.used_mb;
@@ -222,7 +222,7 @@ function updateDashboard(metrics) {
             ? `${(ramUsedMB / 1024).toFixed(1)} GB` 
             : `${ramUsedMB} MB`;
         document.getElementById('ram-usage').textContent = ramUsageDisplay;
-        document.getElementById('ram-total').textContent = `of ${ramTotalGB} GB`;
+        document.getElementById('ram-total').textContent = `/ ${ramTotalGB} GB`;
         document.getElementById('ram-progress').style.width = `${ramUsedPercent}%`;
 
         // Update Disk metrics
@@ -231,7 +231,7 @@ function updateDashboard(metrics) {
         const diskUsedPercent = parseFloat(metrics.disk.used_percent);
         
         document.getElementById('disk-usage').textContent = `${diskUsedGB} GB`;
-        document.getElementById('disk-total').textContent = `of ${diskTotalGB} GB`;
+        document.getElementById('disk-total').textContent = `/ ${diskTotalGB} GB`;
         document.getElementById('disk-progress').style.width = `${diskUsedPercent}%`;
 
         // Update process tables

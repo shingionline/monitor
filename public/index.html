@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Monitor Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" href="styles.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -69,23 +71,23 @@
                 <div class="main-metrics">
                     <!-- CPU Usage -->
                     <div class="metric-card">
-                        <h3>Average system load</h3>
+                        <h3>CPU usage</h3>
                         <div class="metric-main">
                             <span class="metric-value" id="cpu-usage">0%</span>
-                            <span class="metric-details" id="load-averages">0.00 0.00 0.00</span>
+                            <!-- <span class="metric-details" id="load-averages">0.00 0.00 0.00</span> -->
                         </div>
                         <div class="chart-container">
                             <canvas id="cpu-chart" width="300" height="100"></canvas>
                         </div>
-                        <div class="chart-note">No historical data available yet</div>
+                        <!-- <div class="chart-note">No historical data available yet</div> -->
                     </div>
 
                     <!-- RAM Usage -->
                     <div class="metric-card">
-                        <h3>Current RAM usage</h3>
+                        <h3>Memory</h3>
                         <div class="metric-main">
                             <span class="metric-value" id="ram-usage">0 MB</span>
-                            <span class="metric-details" id="ram-total">of 0 MB</span>
+                            <span class="metric-details" id="ram-total">/ 0 MB</span>
                         </div>
                         <div class="progress-bar">
                             <div class="progress-fill" id="ram-progress"></div>
@@ -93,15 +95,15 @@
                         <div class="chart-container">
                             <canvas id="ram-chart" width="300" height="100"></canvas>
                         </div>
-                        <div class="chart-note">No historical data available yet</div>
+                        <!-- <div class="chart-note">No historical data available yet</div> -->
                     </div>
 
                     <!-- Disk Usage -->
                     <div class="metric-card">
-                        <h3>Overall disk usage</h3>
+                        <h3>Disk</h3>
                         <div class="metric-main">
                             <span class="metric-value" id="disk-usage">0 MB</span>
-                            <span class="metric-details" id="disk-total">of 0 GB</span>
+                            <span class="metric-details" id="disk-total">/ 0 GB</span>
                         </div>
                         <div class="progress-bar">
                             <div class="progress-fill" id="disk-progress"></div>
@@ -109,7 +111,7 @@
                         <div class="chart-container">
                             <canvas id="disk-chart" width="300" height="100"></canvas>
                         </div>
-                        <div class="chart-note">No historical data available yet</div>
+                        <!-- <div class="chart-note">No historical data available yet</div> -->
                     </div>
                 </div>
             </div>
