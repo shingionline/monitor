@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Monitor Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <!-- <header class="header">
+            <div class="header-right">
+                <div class="update-timer text-center">
+                    Next update in <span id="countdown">10</span> seconds
+                </div>
+            </div>
+        </header> -->
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="overview">Overview</button>
+            <button class="nav-tab" data-tab="processes">Top Processes</button>
+            <button class="nav-tab" disabled>Update in <span id="countdown">10</span> seconds</button>
+        </nav>
+
+        <div class="dashboard">
+            <!-- Overview Tab -->
+            <div class="tab-content" id="overview">
+                <!-- System Info Cards -->
+                <div class="info-cards">
+                    <div class="info-card">
+                        <div class="card-header">Hostname</div>
+                        <div class="card-value" id="hostname">Loading...</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-header">System Date</div>
+                        <div class="card-value" id="system-date">Loading...</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-header">System Uptime</div>
+                        <div class="card-value" id="uptime">Loading...</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-header">CPU Model</div>
+                        <div class="card-value" id="cpu-model">Loading...</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-header">Operating System</div>
+                        <div class="card-value" id="operating-system">Loading...</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-header">Network Activity ↓</div>
+                        <div class="card-value" id="network-incoming">0.00 KB/s</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-header">Network Activity ↑</div>
+                        <div class="card-value" id="network-outgoing">0.00 KB/s</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-header">Processes</div>
+                        <div class="card-value" id="processes">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- Main Metrics -->
+                <div class="main-metrics">
+                    <!-- CPU Usage -->
+                    <div class="metric-card">
+                        <h3>Average system load</h3>
+                        <div class="metric-main">
+                            <span class="metric-value" id="cpu-usage">0%</span>
+                            <span class="metric-details" id="load-averages">0.00 0.00 0.00</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="cpu-chart" width="300" height="100"></canvas>
+                        </div>
+                        <div class="chart-note">No historical data available yet</div>
+                    </div>
+
+                    <!-- RAM Usage -->
+                    <div class="metric-card">
+                        <h3>Current RAM usage</h3>
+                        <div class="metric-main">
+                            <span class="metric-value" id="ram-usage">0 MB</span>
+                            <span class="metric-details" id="ram-total">of 0 MB</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="ram-progress"></div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="ram-chart" width="300" height="100"></canvas>
+                        </div>
+                        <div class="chart-note">No historical data available yet</div>
+                    </div>
+
+                    <!-- Disk Usage -->
+                    <div class="metric-card">
+                        <h3>Overall disk usage</h3>
+                        <div class="metric-main">
+                            <span class="metric-value" id="disk-usage">0 MB</span>
+                            <span class="metric-details" id="disk-total">of 0 GB</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="disk-progress"></div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="disk-chart" width="300" height="100"></canvas>
+                        </div>
+                        <div class="chart-note">No historical data available yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Processes Tab -->
+            <div class="tab-content hidden" id="processes">
+                <div class="processes-container">
+                    <div class="processes-section">
+                        <h3>Top Processes by CPU Usage</h3>
+                        <div class="process-table">
+                            <div class="process-header">
+                                <span>Process</span>
+                                <span>CPU %</span>
+                                <span>Memory %</span>
+                            </div>
+                            <div id="cpu-processes" class="process-list">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="processes-section">
+                        <h3>Top Processes by Memory Usage</h3>
+                        <div class="process-table">
+                            <div class="process-header">
+                                <span>Process</span>
+                                <span>CPU %</span>
+                                <span>Memory %</span>
+                            </div>
+                            <div id="memory-processes" class="process-list">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
