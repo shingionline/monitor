@@ -247,6 +247,12 @@ body {
     overflow-y: auto;
 }
 
+.cpu-header {
+    display:flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
 .process-item {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;

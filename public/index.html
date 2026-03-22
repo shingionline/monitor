@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Monitor Dashboard</title>
+    <title>Server Monitor</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" href="styles.css">
@@ -12,14 +12,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <!-- <header class="header">
-            <div class="header-right">
-                <div class="update-timer text-center">
-                    Next update in <span id="countdown">10</span> seconds
-                </div>
-            </div>
-        </header> -->
 
         <!-- Navigation Tabs -->
         <nav class="nav-tabs">
@@ -46,7 +38,7 @@
                         <div class="card-value" id="uptime">Loading...</div>
                     </div>
                     <div class="info-card">
-                        <div class="card-header">CPU Model</div>
+                        <div class="card-header">Processor</div>
                         <div class="card-value" id="cpu-model">Loading...</div>
                     </div>
                     <div class="info-card">
@@ -71,7 +63,11 @@
                 <div class="main-metrics">
                     <!-- CPU Usage -->
                     <div class="metric-card">
-                        <h3>CPU</h3>
+                        <div class="cpu-header">
+                            <h3>CPU</h3>
+                        <span class="card-header" id="cpu-cores">Loading...</span>
+                        </div>
+                        
                         <div class="metric-main">
                             <span class="metric-value" id="cpu-usage">0%</span>
                             <!-- <span class="metric-details" id="load-averages">0.00 0.00 0.00</span> -->

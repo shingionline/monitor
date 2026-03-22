@@ -194,6 +194,7 @@ function updateDashboard(metrics) {
         
         updateElement('uptime', metrics.metadata.uptime);
         updateElement('cpu-model', metrics.cpu.model);
+        updateElement('cpu-cores', metrics.cpu.cores_display);
         updateElement('operating-system', metrics.metadata.os);
         updateElement('cpu-speed', metrics.cpu.speed);
         updateElement('kernel', 'Linux');

@@ -251,6 +251,8 @@ async function getSystemMetrics() {
                 model: cpuInfo.manufacturer + ' ' + cpuInfo.brand,
                 speed: cpuInfo.speed ? `${cpuInfo.speed} GHz` : 'Unknown',
                 cores: cpuInfo.cores,
+                physical_cores: cpuInfo.physicalCores,
+                cores_display: `${cpuInfo.physicalCores} cores • ${cpuInfo.cores} threads`,
                 load_1: loadAvg[0].toFixed(2),
                 load_5: loadAvg[1].toFixed(2),
                 load_15: loadAvg[2].toFixed(2)
