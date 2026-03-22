@@ -150,7 +150,18 @@ async function getSystemMetrics() {
 
         // Disk usage
         const fsSize = await si.fsSize();
-        const rootFs = fsSize.find(fs => fs.mount === '/') || fsSize[0];
+        
+        // Check if we're in WSL and prefer Windows C: drive over WSL virtual disk
+        let rootFs = fsSize.find(fs => fs.mount === '/');
+        const windowsC = fsSize.find(fs => fs.mount === '/mnt/c');
+        
+        // If in WSL and Windows C drive is available, use that instead
+        if (windowsC && rootFs && rootFs.size > windowsC.size * 1.5) {
+            rootFs = windowsC;
+        } else if (!rootFs) {
+            rootFs = fsSize[0];
+        }
+        
         const diskUsedPercent = rootFs ? ((rootFs.used / rootFs.size) * 100).toFixed(0) : 0;
 
         // Top processes

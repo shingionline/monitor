@@ -173,8 +173,14 @@ function initializeCharts() {
 // Update dashboard with new metrics
 function updateDashboard(metrics) {
     try {
-        // Update hostname info card
-        document.getElementById('hostname').textContent = metrics.metadata.hostname;
+        // Update system info cards (with safety checks for removed elements)
+        const updateElement = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        };
+        
+        // Update hostname info card  
+        updateElement('hostname', metrics.metadata.hostname);
         
         // Update system date with formatted time
         const now = new Date();
@@ -184,21 +190,20 @@ function updateDashboard(metrics) {
         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const formattedDate = `${day} ${month} ${year} ${hours}:${minutes}`;
-        document.getElementById('system-date').textContent = formattedDate;
+        updateElement('system-date', formattedDate);
         
-        // Update system info cards
-        document.getElementById('uptime').textContent = metrics.metadata.uptime;
-        document.getElementById('cpu-model').textContent = metrics.cpu.model;
-        document.getElementById('operating-system').textContent = metrics.metadata.os;
-        document.getElementById('cpu-speed').textContent = metrics.cpu.speed;
-        document.getElementById('kernel').textContent = 'Linux'; // Simplified
-        document.getElementById('file-handles').textContent = metrics.system.file_handles;
-        document.getElementById('processes').textContent = metrics.system.processes;
+        updateElement('uptime', metrics.metadata.uptime);
+        updateElement('cpu-model', metrics.cpu.model);
+        updateElement('operating-system', metrics.metadata.os);
+        updateElement('cpu-speed', metrics.cpu.speed);
+        updateElement('kernel', 'Linux');
+        updateElement('file-handles', metrics.system.file_handles);
+        updateElement('processes', metrics.system.processes);
         
-        // Update network activity
+        // Update network activity (with safety checks)
         if (metrics.network) {
-            document.getElementById('network-incoming').textContent = metrics.network.incoming;
-            document.getElementById('network-outgoing').textContent = metrics.network.outgoing;
+            updateElement('network-incoming', metrics.network.incoming);
+            updateElement('network-outgoing', metrics.network.outgoing);
         }
 
         // Update CPU metrics
@@ -212,7 +217,11 @@ function updateDashboard(metrics) {
         const ramTotalGB = metrics.memory.total_gb;
         const ramUsedPercent = parseFloat(metrics.memory.used_percent);
         
-        document.getElementById('ram-usage').textContent = `${ramUsedMB} MB`;
+        // Format RAM usage: show GB if over 1GB, otherwise MB
+        const ramUsageDisplay = ramUsedMB >= 1024 
+            ? `${(ramUsedMB / 1024).toFixed(1)} GB` 
+            : `${ramUsedMB} MB`;
+        document.getElementById('ram-usage').textContent = ramUsageDisplay;
         document.getElementById('ram-total').textContent = `of ${ramTotalGB} GB`;
         document.getElementById('ram-progress').style.width = `${ramUsedPercent}%`;
 
