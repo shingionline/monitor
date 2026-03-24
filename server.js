@@ -357,7 +357,7 @@ setInterval(async () => {
     }
 }, DATA_COLLECTION_INTERVAL);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
     console.log(`System Monitor Dashboard running on http://localhost:${PORT}`);
 });
