@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTabs();
     initializeCharts();
     startCountdown();
+    
+    // Hide copy button initially
+    const copyBtn = document.getElementById('copy-ip-btn');
+    if (copyBtn) {
+        copyBtn.style.display = 'none';
+    }
 });
 
 // Socket event listeners
@@ -182,19 +188,46 @@ function updateDashboard(metrics) {
         // Update hostname info card  
         updateElement('hostname', metrics.metadata.hostname);
         
-        // Update public IP as clickable link
+        // Update public IP as clickable link and copy button
         const publicIpElement = document.getElementById('public-ip');
+        const copyBtn = document.getElementById('copy-ip-btn');
+        
         if (publicIpElement && metrics.metadata.public_ip) {
             const ip = metrics.metadata.public_ip;
             publicIpElement.textContent = `${ip}`;
-            publicIpElement.style.cursor = 'pointer';
-            publicIpElement.onclick = () => {
-                window.open(`http://${ip}`, '_blank');
-            };
+            
+            // Check if IP is valid before showing copy button
+            const isValidIp = ip && 
+                             ip !== 'Unavailable' && 
+                             ip !== 'Loading...' && 
+                             ip.trim() !== '' &&
+                             /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip.trim());
+            
+            if (isValidIp) {
+                publicIpElement.style.cursor = 'pointer';
+                publicIpElement.onclick = () => {
+                    window.open(`http://${ip}`, '_blank');
+                };
+                
+                // Show and setup copy button
+                if (copyBtn) {
+                    copyBtn.style.display = 'flex';
+                    setupCopyButtonHandler(copyBtn, ip);
+                }
+            } else {
+                // Hide copy button for invalid/loading IPs
+                if (copyBtn) {
+                    copyBtn.style.display = 'none';
+                }
+                publicIpElement.style.cursor = 'default';
+                publicIpElement.onclick = null;
+            }
+        } else {
+            // Hide copy button if no IP element or data
+            if (copyBtn) {
+                copyBtn.style.display = 'none';
+            }
         }
-        
-        // Setup copy IP functionality
-        setupCopyIpButton(metrics.metadata.public_ip);
         
         // Update system date with formatted time
         const now = new Date();
@@ -414,45 +447,45 @@ function formatUptime(seconds) {
     return result;
 }
 
+function setupCopyButtonHandler(copyBtn, ip) {
+    copyBtn.onclick = async (e) => {
+        e.stopPropagation();
+        try {
+            await navigator.clipboard.writeText(ip);
+            // Show check icon
+            const copyIcon = copyBtn.querySelector('.copy-icon');
+            const checkIcon = copyBtn.querySelector('.check-icon');
+            
+            copyIcon.style.display = 'none';
+            checkIcon.style.display = 'block';
+            copyBtn.classList.add('copied');
+            
+            const originalTitle = copyBtn.title;
+            copyBtn.title = 'Copied!';
+            
+            setTimeout(() => {
+                copyIcon.style.display = 'block';
+                checkIcon.style.display = 'none';
+                copyBtn.classList.remove('copied');
+                copyBtn.title = originalTitle;
+            }, 2500);
+        } catch (err) {
+            console.error('Failed to copy IP:', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = ip;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        }
+    };
+}
+
+// Deprecated - keeping for compatibility but no longer used
 function setupCopyIpButton(ip) {
-    const copyBtn = document.getElementById('copy-ip-btn');
-    if (copyBtn && ip && ip !== 'Unavailable') {
-        copyBtn.style.display = 'flex';
-        copyBtn.onclick = async (e) => {
-            e.stopPropagation();
-            try {
-                await navigator.clipboard.writeText(ip);
-                // Show check icon
-                const copyIcon = copyBtn.querySelector('.copy-icon');
-                const checkIcon = copyBtn.querySelector('.check-icon');
-                
-                copyIcon.style.display = 'none';
-                checkIcon.style.display = 'block';
-                copyBtn.classList.add('copied');
-                
-                const originalTitle = copyBtn.title;
-                copyBtn.title = 'Copied!';
-                
-                setTimeout(() => {
-                    copyIcon.style.display = 'block';
-                    checkIcon.style.display = 'none';
-                    copyBtn.classList.remove('copied');
-                    copyBtn.title = originalTitle;
-                }, 2500);
-            } catch (err) {
-                console.error('Failed to copy IP:', err);
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = ip;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-            }
-        };
-    } else if (copyBtn) {
-        copyBtn.style.display = 'none';
-    }
+    // This function is no longer used - copy button logic moved to updateDashboard
+    console.warn('setupCopyIpButton is deprecated - copy button handled in updateDashboard');
 }
 
 // Error handling
