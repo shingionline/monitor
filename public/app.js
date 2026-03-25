@@ -229,14 +229,8 @@ function updateDashboard(metrics) {
             }
         }
         
-        // Update system date with formatted time
-        const now = new Date();
-        const day = now.getDate();
-        const month = now.toLocaleDateString('en-US', { month: 'long' });
-        const year = now.getFullYear();
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const formattedDate = `${day} ${month} ${year} ${hours}:${minutes}`;
+        // Update system date with server time
+        const formattedDate = metrics.metadata.server_time;
         updateElement('system-date', formattedDate);
         
         // Update timezone information in separate div (server timezone)

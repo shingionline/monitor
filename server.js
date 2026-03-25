@@ -250,6 +250,14 @@ async function getSystemMetrics() {
         const offsetSign = offsetMinutes <= 0 ? '+' : '-';
         const utcOffset = `UTC ${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMins.toString().padStart(2, '0')}`;
         
+        // Format server time
+        const day = serverTime.getDate();
+        const month = serverTime.toLocaleDateString('en-US', { month: 'long' });
+        const year = serverTime.getFullYear();
+        const hours = serverTime.getHours().toString().padStart(2, '0');
+        const minutes = serverTime.getMinutes().toString().padStart(2, '0');
+        const formattedServerTime = `${day} ${month} ${year} ${hours}:${minutes}`;
+        
         return {
             metadata: {
                 hostname,
@@ -258,7 +266,8 @@ async function getSystemMetrics() {
                 uptime,
                 reported_at: currentTime,
                 timezone: timeZone,
-                timezone_offset: utcOffset
+                timezone_offset: utcOffset,
+                server_time: formattedServerTime
             },
             cpu: {
                 usage_percent: currentLoad.currentLoad.toFixed(1),
