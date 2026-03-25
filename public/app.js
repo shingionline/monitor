@@ -229,23 +229,14 @@ function updateDashboard(metrics) {
             }
         }
         
-        // Update system date with formatted time and timezone
+        // Update system date with formatted time
         const now = new Date();
         const day = now.getDate();
         const month = now.toLocaleDateString('en-US', { month: 'long' });
         const year = now.getFullYear();
         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = now.getMinutes().toString().padStart(2, '0');
-        
-        // Get timezone information
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const offsetMinutes = now.getTimezoneOffset();
-        const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
-        const offsetMins = Math.abs(offsetMinutes % 60);
-        const offsetSign = offsetMinutes <= 0 ? '+' : '-';
-        const utcOffset = `UTC ${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMins.toString().padStart(2, '0')}`;
-        
-        const formattedDate = `${day} ${month} ${year} ${hours}:${minutes}<br>${timeZone} (${utcOffset})`;
+        const formattedDate = `${day} ${month} ${year} ${hours}:${minutes}`;
         updateElement('system-date', formattedDate);
         
         updateElement('uptime', metrics.metadata.uptime);
@@ -253,7 +244,7 @@ function updateDashboard(metrics) {
         updateElement('cpu-cores', metrics.cpu.cores_display);
         updateElement('operating-system', metrics.metadata.os);
         updateElement('cpu-speed', metrics.cpu.speed);
-        updateElement('kernel', 'Linux');
+        updateElement('kernel', 'Linux');z
         updateElement('file-handles', metrics.system.file_handles);
         updateElement('processes', metrics.system.processes);
         
@@ -459,72 +450,36 @@ function formatUptime(seconds) {
 function setupCopyButtonHandler(copyBtn, ip) {
     copyBtn.onclick = async (e) => {
         e.stopPropagation();
-        
-        // Check if modern clipboard API is available (requires HTTPS)
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            try {
-                await navigator.clipboard.writeText(ip);
-                showCopySuccess(copyBtn);
-                return;
-            } catch (err) {
-                console.error('Modern clipboard API failed:', err);
-                // Fall through to legacy method
-            }
-        }
-        
-        // Fallback for non-HTTPS or older browsers
         try {
+            await navigator.clipboard.writeText(ip);
+            // Show check icon
+            const copyIcon = copyBtn.querySelector('.copy-icon');
+            const checkIcon = copyBtn.querySelector('.check-icon');
+            
+            copyIcon.style.display = 'none';
+            checkIcon.style.display = 'block';
+            copyBtn.classList.add('copied');
+            
+            const originalTitle = copyBtn.title;
+            copyBtn.title = 'Copied!';
+            
+            setTimeout(() => {
+                copyIcon.style.display = 'block';
+                checkIcon.style.display = 'none';
+                copyBtn.classList.remove('copied');
+                copyBtn.title = originalTitle;
+            }, 2500);
+        } catch (err) {
+            console.error('Failed to copy IP:', err);
+            // Fallback for older browsers
             const textArea = document.createElement('textarea');
             textArea.value = ip;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
             document.body.appendChild(textArea);
-            textArea.focus();
             textArea.select();
-            
-            const successful = document.execCommand('copy');
+            document.execCommand('copy');
             document.body.removeChild(textArea);
-            
-            if (successful) {
-                showCopySuccess(copyBtn);
-            } else {
-                console.error('Copy command was unsuccessful');
-                showCopyError(copyBtn);
-            }
-        } catch (err) {
-            console.error('Failed to copy IP using fallback method:', err);
-            showCopyError(copyBtn);
         }
     };
-}
-
-function showCopySuccess(copyBtn) {
-    const copyIcon = copyBtn.querySelector('.copy-icon');
-    const checkIcon = copyBtn.querySelector('.check-icon');
-    
-    copyIcon.style.display = 'none';
-    checkIcon.style.display = 'block';
-    copyBtn.classList.add('copied');
-    
-    const originalTitle = copyBtn.title;
-    copyBtn.title = 'Copied!';
-    
-    setTimeout(() => {
-        copyIcon.style.display = 'block';
-        checkIcon.style.display = 'none';
-        copyBtn.classList.remove('copied');
-        copyBtn.title = originalTitle;
-    }, 2500);
-}
-
-function showCopyError(copyBtn) {
-    const originalTitle = copyBtn.title;
-    copyBtn.title = 'Copy failed - please try manually';
-    
-    setTimeout(() => {
-        copyBtn.title = originalTitle;
-    }, 2500);
 }
 
 // Deprecated - keeping for compatibility but no longer used
