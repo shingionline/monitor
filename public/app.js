@@ -229,14 +229,23 @@ function updateDashboard(metrics) {
             }
         }
         
-        // Update system date with formatted time
+        // Update system date with formatted time and timezone
         const now = new Date();
         const day = now.getDate();
         const month = now.toLocaleDateString('en-US', { month: 'long' });
         const year = now.getFullYear();
         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = now.getMinutes().toString().padStart(2, '0');
-        const formattedDate = `${day} ${month} ${year} ${hours}:${minutes}`;
+        
+        // Get timezone information
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const offsetMinutes = now.getTimezoneOffset();
+        const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+        const offsetMins = Math.abs(offsetMinutes % 60);
+        const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+        const utcOffset = `UTC ${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMins.toString().padStart(2, '0')}`;
+        
+        const formattedDate = `${day} ${month} ${year} ${hours}:${minutes}<br>${timeZone} (${utcOffset})`;
         updateElement('system-date', formattedDate);
         
         updateElement('uptime', metrics.metadata.uptime);
