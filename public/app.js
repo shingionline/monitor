@@ -239,14 +239,10 @@ function updateDashboard(metrics) {
         const formattedDate = `${day} ${month} ${year} ${hours}:${minutes}`;
         updateElement('system-date', formattedDate);
         
-        // Update timezone information in separate div
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const offsetMinutes = now.getTimezoneOffset();
-        const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
-        const offsetMins = Math.abs(offsetMinutes % 60);
-        const offsetSign = offsetMinutes <= 0 ? '+' : '-';
-        const utcOffset = `UTC ${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMins.toString().padStart(2, '0')}`;
-        const formattedTimezone = `${timeZone} (${utcOffset})`;
+        // Update timezone information in separate div (server timezone)
+        const serverTimeZone = metrics.metadata.timezone;
+        const serverUtcOffset = metrics.metadata.timezone_offset;
+        const formattedTimezone = `${serverTimeZone} (${serverUtcOffset})`;
         updateElement('system-timezone', formattedTimezone);
         
         updateElement('uptime', metrics.metadata.uptime);

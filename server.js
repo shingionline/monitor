@@ -242,6 +242,14 @@ async function getSystemMetrics() {
             // Fallback if /proc/sys/fs/file-nr is not available
         }
 
+        const serverTime = new Date();
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const offsetMinutes = serverTime.getTimezoneOffset();
+        const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+        const offsetMins = Math.abs(offsetMinutes % 60);
+        const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+        const utcOffset = `UTC ${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMins.toString().padStart(2, '0')}`;
+        
         return {
             metadata: {
                 hostname,
@@ -249,7 +257,8 @@ async function getSystemMetrics() {
                 os: `${osInfo.distro} ${osInfo.release}`,
                 uptime,
                 reported_at: currentTime,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                timezone: timeZone,
+                timezone_offset: utcOffset
             },
             cpu: {
                 usage_percent: currentLoad.currentLoad.toFixed(1),
