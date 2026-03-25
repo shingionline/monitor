@@ -193,6 +193,9 @@ function updateDashboard(metrics) {
             };
         }
         
+        // Setup copy IP functionality
+        setupCopyIpButton(metrics.metadata.public_ip);
+        
         // Update system date with formatted time
         const now = new Date();
         const day = now.getDate();
@@ -409,6 +412,47 @@ function formatUptime(seconds) {
     result += `${minutes} minute${minutes !== 1 ? 's' : ''}`;
     
     return result;
+}
+
+function setupCopyIpButton(ip) {
+    const copyBtn = document.getElementById('copy-ip-btn');
+    if (copyBtn && ip && ip !== 'Unavailable') {
+        copyBtn.style.display = 'flex';
+        copyBtn.onclick = async (e) => {
+            e.stopPropagation();
+            try {
+                await navigator.clipboard.writeText(ip);
+                // Show check icon
+                const copyIcon = copyBtn.querySelector('.copy-icon');
+                const checkIcon = copyBtn.querySelector('.check-icon');
+                
+                copyIcon.style.display = 'none';
+                checkIcon.style.display = 'block';
+                copyBtn.classList.add('copied');
+                
+                const originalTitle = copyBtn.title;
+                copyBtn.title = 'Copied!';
+                
+                setTimeout(() => {
+                    copyIcon.style.display = 'block';
+                    checkIcon.style.display = 'none';
+                    copyBtn.classList.remove('copied');
+                    copyBtn.title = originalTitle;
+                }, 2500);
+            } catch (err) {
+                console.error('Failed to copy IP:', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = ip;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+        };
+    } else if (copyBtn) {
+        copyBtn.style.display = 'none';
+    }
 }
 
 // Error handling

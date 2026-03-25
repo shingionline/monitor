@@ -145,6 +145,41 @@ body {
     text-decoration-color: #6bb3ff;
 }
 
+.card-sub-value-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.copy-btn {
+  background: none !important;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px 0 0 4px;
+}
+
+.copy-btn:hover {
+    background: none !important;
+  border: none;
+}
+
+.copy-btn:active {
+    background: #fff;
+    transform: scale(0.95);
+}
+
+.copy-btn.copied {
+    color: #fff;
+    border:none !important;
+}
+
+/* .copy-btn.copied:hover {
+    color: #56d364;
+    border-color: #56d364;
+} */
+
 /* Main Metrics */
 .main-metrics {
     display: grid;
