@@ -239,6 +239,16 @@ function updateDashboard(metrics) {
         const formattedDate = `${day} ${month} ${year} ${hours}:${minutes}`;
         updateElement('system-date', formattedDate);
         
+        // Update timezone information in separate div
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const offsetMinutes = now.getTimezoneOffset();
+        const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+        const offsetMins = Math.abs(offsetMinutes % 60);
+        const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+        const utcOffset = `UTC ${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMins.toString().padStart(2, '0')}`;
+        const formattedTimezone = `${timeZone} (${utcOffset})`;
+        updateElement('system-timezone', formattedTimezone);
+        
         updateElement('uptime', metrics.metadata.uptime);
         updateElement('cpu-model', metrics.cpu.model);
         updateElement('cpu-cores', metrics.cpu.cores_display);
