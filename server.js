@@ -6,6 +6,7 @@ const si = require('systeminformation');
 const os = require('os');
 const { exec } = require('child_process');
 const fs = require('fs');
+const https = require('https');
 
 const app = express();
 const server = http.createServer(app);
@@ -223,6 +224,9 @@ async function getSystemMetrics() {
         const users = await si.users();
         const currentSessions = users.length;
         
+        // Get public IP address
+        const publicIP = await getPublicIP();
+        
         // Get file handle information (like NodeQuery)
         let fileHandles = 'N/A';
         let fileHandlesLimit = 'N/A';
@@ -241,6 +245,7 @@ async function getSystemMetrics() {
         return {
             metadata: {
                 hostname,
+                public_ip: publicIP,
                 os: `${osInfo.distro} ${osInfo.release}`,
                 uptime,
                 reported_at: currentTime,
@@ -317,6 +322,39 @@ function checkServiceStatus(serviceName) {
         exec(`systemctl is-active ${serviceName}`, (error, stdout) => {
             resolve(stdout.trim() || 'inactive');
         });
+    });
+}
+
+// Function to get public IP address
+async function getPublicIP() {
+    return new Promise((resolve) => {
+        const options = {
+            hostname: 'api.ipify.org',
+            path: '/',
+            method: 'GET',
+            timeout: 5000
+        };
+
+        const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', chunk => {
+                data += chunk;
+            });
+            res.on('end', () => {
+                resolve(data.trim());
+            });
+        });
+
+        req.on('error', () => {
+            resolve('Unavailable');
+        });
+
+        req.on('timeout', () => {
+            req.destroy();
+            resolve('Unavailable');
+        });
+
+        req.end();
     });
 }
 

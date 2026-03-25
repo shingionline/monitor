@@ -182,6 +182,17 @@ function updateDashboard(metrics) {
         // Update hostname info card  
         updateElement('hostname', metrics.metadata.hostname);
         
+        // Update public IP as clickable link
+        const publicIpElement = document.getElementById('public-ip');
+        if (publicIpElement && metrics.metadata.public_ip) {
+            const ip = metrics.metadata.public_ip;
+            publicIpElement.textContent = `${ip}`;
+            publicIpElement.style.cursor = 'pointer';
+            publicIpElement.onclick = () => {
+                window.open(`http://${ip}`, '_blank');
+            };
+        }
+        
         // Update system date with formatted time
         const now = new Date();
         const day = now.getDate();

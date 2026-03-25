@@ -129,6 +129,22 @@ body {
     font-weight: 500;
 }
 
+.card-sub-value {
+    color: #4a9eff;
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin-top: 0.25rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: all 0.2s ease;
+}
+
+.card-sub-value:hover {
+    color: #6bb3ff;
+    text-decoration-color: #6bb3ff;
+}
+
 /* Main Metrics */
 .main-metrics {
     display: grid;
