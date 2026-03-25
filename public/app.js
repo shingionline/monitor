@@ -244,7 +244,7 @@ function updateDashboard(metrics) {
         updateElement('cpu-cores', metrics.cpu.cores_display);
         updateElement('operating-system', metrics.metadata.os);
         updateElement('cpu-speed', metrics.cpu.speed);
-        updateElement('kernel', 'Linux');z
+        updateElement('kernel', 'Linux');
         updateElement('file-handles', metrics.system.file_handles);
         updateElement('processes', metrics.system.processes);
         
